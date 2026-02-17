@@ -69,11 +69,33 @@ export interface LoginResponse {
   accessToken: string
   agency: {
     id: string
-    phone: string
+    phone?: string
     name: string
     role: string
     approvalStatus: string
     onboardingStatus: string
+  }
+}
+
+export interface AgencyUserLoginRequest {
+  email: string
+  password: string
+}
+
+export interface AgencyUserLoginResponse {
+  accessToken: string
+  agency: {
+    id: string
+    name: string
+    role: string
+    approvalStatus: string
+    onboardingStatus: string
+  }
+  user: {
+    id: string
+    email: string
+    name: string | null
+    role: string
   }
 }
 
@@ -147,6 +169,14 @@ export interface OnboardingStatusResponse {
   apiKey: string | null
   integrationType: string
   apifyActorId: string | null
+}
+
+export interface ResendVerifyPhoneOtpRequest {
+  phone: string
+}
+
+export interface ResendVerifyPhoneOtpResponse {
+  message: string
 }
 
 export interface OnboardingStep1Request {
@@ -252,6 +282,17 @@ export const authAPI = {
     return data_
   },
 
+  agencyUserLogin: async (data: AgencyUserLoginRequest): Promise<AgencyUserLoginResponse> => {
+    const response = await api.post(endpoints.auth.agencyUserLogin, data)
+    const data_ = response.data as AgencyUserLoginResponse
+    if (data_.accessToken && typeof window !== 'undefined') {
+      localStorage.setItem('auth_token', data_.accessToken)
+      if (data_.agency?.id) localStorage.setItem('agency_id', data_.agency.id)
+      if (data_.agency?.name) localStorage.setItem('agency_name', data_.agency.name)
+    }
+    return data_
+  },
+
   requestLoginOtp: async (data: RequestLoginOtpRequest): Promise<RequestLoginOtpResponse> => {
     const response = await api.post(endpoints.auth.requestLoginOtp, data)
     return response.data
@@ -283,6 +324,10 @@ export const authAPI = {
       }
     }
     return data
+  },
+  resendVerifyPhoneOtp: async (data: ResendVerifyPhoneOtpRequest): Promise<ResendVerifyPhoneOtpResponse> => {
+    const response = await api.post(endpoints.auth.resendVerifyPhoneOtp, data)
+    return response.data
   },
 
   updateOnboardingStep1: async (data: OnboardingStep1Request) => {
@@ -324,6 +369,26 @@ export const authAPI = {
   },
 }
 
+export interface AgencyUser {
+  id: string
+  email: string
+  name: string | null
+  role: string
+  createdAt: string
+}
+
+export interface CreateAgencyUserRequest {
+  email: string
+  password: string
+  name?: string
+  role?: 'DEALER_ADMIN' | 'DEALER_USER'
+}
+
+export interface UpdateAgencyUserRequest {
+  name?: string
+  role?: 'DEALER_ADMIN' | 'DEALER_USER'
+}
+
 export interface AgencyProfile {
   id: string
   email: string
@@ -356,6 +421,7 @@ export interface AgencyProfile {
   isActive: boolean
   onboardingStatus: string
   approvalStatus: string
+  role?: string
   activeListings: number
   createdAt: string
 }
@@ -386,6 +452,14 @@ export interface UpdateProfileRequest {
   apiKey?: string
 }
 
+export interface ResendVerifyPhoneOtpRequest {
+  phone: string
+}
+
+export interface ResendVerifyPhoneOtpResponse {
+  message: string
+}
+
 export interface DashboardSummary {
   activeListings: number
   totalClicks: number
@@ -393,6 +467,7 @@ export interface DashboardSummary {
   cpc: number
   totalLeads: number
   cpl: number
+  configuredCpl?: number
   todayLeads: number
   weekLeads: number
   monthLeads: number
@@ -507,6 +582,26 @@ export const agencyAPI = {
 
   markAsLead: async (clickId: string): Promise<{ id: string; converted: boolean }> => {
     const response = await api.post(endpoints.clicks.lead, { clickId })
+    return response.data
+  },
+
+  getUsers: async (): Promise<AgencyUser[]> => {
+    const response = await api.get(endpoints.agency.users)
+    return response.data
+  },
+
+  createUser: async (data: CreateAgencyUserRequest): Promise<AgencyUser> => {
+    const response = await api.post(endpoints.agency.users, data)
+    return response.data
+  },
+
+  updateUser: async (id: string, data: UpdateAgencyUserRequest): Promise<AgencyUser> => {
+    const response = await api.patch(`${endpoints.agency.users}/${id}`, data)
+    return response.data
+  },
+
+  deleteUser: async (id: string): Promise<{ message: string }> => {
+    const response = await api.delete(`${endpoints.agency.users}/${id}`)
     return response.data
   },
 }

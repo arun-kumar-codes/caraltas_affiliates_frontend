@@ -142,7 +142,7 @@ export default function AgencyDashboard() {
         <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-4 shadow-sm md:p-5">
           <p className="text-xs text-gray-500 sm:text-sm">CPL</p>
           <p className="mt-1 text-xl font-bold text-gray-900 sm:text-2xl">
-            {(summary?.totalLeads ?? 0) > 0 ? `₹${Number(summary?.cpl ?? 0).toFixed(2)}` : "—"}
+            {summary != null ? `₹${Number(summary.cpl ?? 0).toFixed(2)}` : "—"}
           </p>
           <div className="mt-2 flex h-9 w-9 items-center justify-center rounded-lg bg-sky-100 sm:h-10 sm:w-10">
             <UserPlus className="h-5 w-5 text-sky-600 sm:h-6 sm:w-6" />

@@ -2,10 +2,12 @@ export const endpoints = {
   auth: {
     signup: '/auth/signup',
     login: '/auth/login',
+    agencyUserLogin: '/auth/agency-user/login',
     requestLoginOtp: '/auth/request-login-otp',
     verifyPhone: '/auth/verify-phone',
     forgotPassword: '/auth/forgot-password',
     resetPassword: '/auth/reset-password',
+    resendVerifyPhoneOtp: '/auth/resend-verify-phone-otp',
   },
   onboarding: {
     status: '/onboarding',
@@ -20,6 +22,7 @@ export const endpoints = {
     profile: '/agency/profile',
     listings: '/agency/listings',
     uploadImages: '/agency/listings/upload-images',
+    users: '/agency/users',
   },
   clicks: {
     stats: (agencyId: string) => `/click/stats/${agencyId}`,

@@ -154,7 +154,7 @@ export default function AnalyticsPage() {
       ["Total Leads", String(stats.totalLeads ?? 0)],
       ["Total Cost", `₹${stats.totalCost.toFixed(2)}`],
       ["CPC", `₹${stats.cpc.toFixed(2)}`],
-      ["CPL", (stats.totalLeads ?? 0) > 0 ? `₹${Number(stats.cpl ?? 0).toFixed(2)}` : "—"],
+      ["CPL", stats != null ? `₹${Number(stats.cpl ?? 0).toFixed(2)}` : "—"],
       [],
       ["Date", "Clicks"],
       ...dateRows,
@@ -298,7 +298,7 @@ export default function AnalyticsPage() {
         <div className="rounded-xl border border-border bg-card p-4 shadow-sm sm:p-5">
           <p className="text-xs text-gray-500">CPL</p>
           <p className="mt-1 text-2xl font-bold text-gray-900 sm:text-3xl">
-            {(stats.totalLeads ?? 0) > 0 ? `₹${Number(stats.cpl ?? 0).toFixed(2)}` : "—"}
+            {stats != null ? `₹${Number(stats.cpl ?? 0).toFixed(2)}` : "—"}
           </p>
         </div>
       </div>

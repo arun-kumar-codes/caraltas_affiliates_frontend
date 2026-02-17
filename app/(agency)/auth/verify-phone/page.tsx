@@ -46,6 +46,15 @@ export default function VerifyPhonePage() {
     setOtp(newOtp.slice(0, 6))
     setError("")
   }
+  const handleResend = async () => {
+    setIsLoading(true)
+    try {
+      await authAPI.resendVerifyPhoneOtp({ phone })
+    } catch (err: any) {
+      setError(err.response?.data?.message || err.message || "Failed to resend OTP. Please try again.")
+    }
+    setIsLoading(false)
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -132,6 +141,16 @@ export default function VerifyPhonePage() {
             <p className="text-sm text-red-600">{error}</p>
           </div>
         )}
+        <div className="mt-6 text-center">
+          <p className="text-gray-600">Resend OTP</p>
+          <button
+            type="button"
+            onClick={handleResend}
+            className="text-primary hover:opacity-80 transition-colors"
+          >
+            Resend OTP
+          </button>
+        </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="flex justify-center gap-2">
